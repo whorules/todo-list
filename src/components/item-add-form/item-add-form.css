@@ -1,3 +1,13 @@
 .item-add-form {
   margin-top: 10px;
 }
+
+.item-add-form input {
+  margin-right: 3px;
+}
+
+.item-add-form button {
+  padding: 5px 15px;
+  font-size: 15px;
+  flex: none;
+}
