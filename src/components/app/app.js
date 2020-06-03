@@ -89,11 +89,10 @@ export default class App extends Component {
           <SearchPanel />
           <ItemStatusFilter />
         </div>
-        <TodoList
-        todos={ todoData }
-        onDeleted={ this.deleteItem }
-        onToggleImportant={ this.onToggleImportant }
-        onToggleDone={ this.onToggleDone } />
+        <TodoList todos={ todoData }
+                  onDeleted={ this.deleteItem }
+                  onToggleImportant={ this.onToggleImportant }
+                  onToggleDone={ this.onToggleDone } />
         <ItemAddForm onItemAdded={this.addItem} />
       </div>
     );
