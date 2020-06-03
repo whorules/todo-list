@@ -7,7 +7,6 @@ import ItemStatusFilter from '../item-status-filter';
 import ItemAddForm from '../item-add-form';
 
 import './app.css';
-import { render } from '@testing-library/react';
 
 export default class App extends Component {
 
@@ -15,17 +14,26 @@ export default class App extends Component {
 
   state = {
     todoData: [
-      { label: 'Drink Coffee', important: false, id: 1 },
-      { label: 'Make Awesome App', important: true, id: 2 },
-      { label: 'Have a lunch', important: false, id: 3 }
+      this.createTodoItem('Drink Coffee'),
+      this.createTodoItem('Make Awesome App'),
+      this.createTodoItem('Have a lunch')
     ]
+  };
+
+  createTodoItem(label) {
+    return {
+      label,
+      important: false,
+      done: false,
+      id: this.maxId++
+    };
   };
 
   deleteItem = (id) => {
     this.setState(({ todoData }) => {
-      const indexOfElementToRemove = todoData.findIndex((el) => el.id === id);
-      const before = todoData.slice(0, indexOfElementToRemove);
-      const after = todoData.slice(indexOfElementToRemove + 1);
+      const index = todoData.findIndex((el) => el.id === id);
+      const before = todoData.slice(0, index);
+      const after = todoData.slice(index + 1);
       const updatedArr = [...before, ...after];
       return {
         todoData: updatedArr
@@ -34,11 +42,7 @@ export default class App extends Component {
   };
 
   addItem = (text) => {
-    const newItem = {
-      label: text,
-      important: false,
-      id: this.maxId++
-    }
+    const newItem =  this.createTodoItem(text);
     this.setState(({ todoData }) => {
       const newArray = [
         ...todoData,
@@ -50,24 +54,43 @@ export default class App extends Component {
     });
   };
 
-  onToggleImportant = (id) => {
-    console.log('Toggle important ', id);
-  };
+  toggleProperty(arr, id, propertyName) {
+    const index = arr.findIndex((el) => el.id === id);
+      const oldItem = arr[index];
+      const newItem = { ...oldItem, [propertyName]: !oldItem[propertyName] };
+      const before = arr.slice(0, index);
+      const after = arr.slice(index + 1);
+      return [...before, newItem, ...after];
+  }
 
   onToggleDone = (id) => {
-    console.log('Toggle done ', id);
+    this.setState(({ todoData }) => {
+      return {
+        todoData: this.toggleProperty(todoData, id, 'done')
+      };
+    });
   };
 
+  onToggleImportant = (id) => {
+    this.setState(({ todoData }) => {
+      return {
+        todoData: this.toggleProperty(todoData, id, 'important')
+      };
+    });  };
+
   render() {
+    const { todoData } = this.state;
+    const doneElementsCount = todoData.filter((el) => el.done).length;
+    const todoElementsCount = todoData.length - doneElementsCount;
     return (
        <div className="todo-app">
-          <AppHeader toDo={1} done={3} />
+          <AppHeader toDo={todoElementsCount} done={doneElementsCount} />
         <div className="top-panel d-flex">
           <SearchPanel />
           <ItemStatusFilter />
         </div>
         <TodoList
-        todos={ this.state.todoData }
+        todos={ todoData }
         onDeleted={ this.deleteItem }
         onToggleImportant={ this.onToggleImportant }
         onToggleDone={ this.onToggleDone } />
