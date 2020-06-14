@@ -4,6 +4,7 @@ Todo-list prject on ReactJS.
 ## Features
 * Add items
 * Delete items
+* Filter items
 * Make items crossed out (done)
 * Make items bold (important)
 * Find items
